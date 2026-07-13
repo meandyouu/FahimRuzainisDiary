@@ -35,9 +35,16 @@
       align-items: center;
       padding-top: 50px;
       border-right: 4px solid var(--accent-blue);
+      gap: 30px; /* Jarak antara ikon */
     }
 
-    .nav-icon { margin-bottom: 40px; font-size: 20px; cursor: pointer; transition: 0.2s; }
+    .nav-icon { 
+      font-size: 20px; 
+      cursor: pointer; 
+      transition: 0.2s; 
+      text-decoration: none; 
+      color: white; 
+    }
     .nav-icon:hover { color: var(--accent-blue); text-shadow: 0 0 10px var(--accent-blue); }
 
     .main-content { flex: 1; padding: 40px; }
@@ -69,7 +76,8 @@
       margin-top: 15px;
       font-size: 8px;
     }
-    #music-toggle:hover { background: white; }
+    #music-toggle:hover:not(:disabled) { background: white; }
+    #music-toggle:disabled { background: #555; color: #ccc; cursor: default; }
 
     .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; margin-top: 40px; }
     
@@ -94,21 +102,25 @@
 </head>
 <body>
 
-  <!-- Audio untuk kesinambungan lagu -->
-  <audio id="bg-music" loop><source src="Wonderwall.mp3" type="audio/mpeg"></audio>
+  <audio id="bg-music" loop><source src="wonderwall.mp3" type="audio/mpeg"></audio>
 
   <nav class="sidebar">
-    <div class="nav-icon" onclick="location.href='index.html'">👤</div>
+    <!-- Navigasi -->
     <div class="nav-icon" onclick="location.href='index.html'">🏠</div>
-    <div class="nav-icon" onclick="location.href='index.html'">📸</div>
-    <div class="nav-icon" onclick="location.href='index.html'">⚙️</div>
+    
+    <div style="border-top: 2px solid var(--accent-blue); width: 40px;"></div>
+
+    <!-- Social Media -->
+    <a href="https://www.instagram.com/rznirsli" target="_blank" class="nav-icon">📸</a>
+    <a href="https://www.tiktok.com/@rznrsli" target="_blank" class="nav-icon">🎵</a>
+    <a href="https://youtube.com/@ruzz4541" target="_blank" class="nav-icon">▶️</a>
   </nav>
 
   <main class="main-content">
     <header>
       <h1>Fahim Ruzaini’s Digital Diary</h1>
       <p>My travel stories and random moments.</p>
-      <button id="music-toggle" onclick="toggleMusic()">🔊 My Music</button>
+      <button id="music-toggle" onclick="toggleMusic()">🔊 START MUSIC</button>
     </header>
 
     <div class="gallery">
@@ -118,13 +130,13 @@
       </div>
       <div class="card" onmousedown="playClickSound()" onclick="location.href='jakarta.html'">
         <img src="ind0.jpg" alt="Jakarta">
-        <div class="card-content"><h3>Jakarta - Bandung</h3></div>
+<div class="card-content"><h3>Jakarta - Bandung</h3></div>
       </div>
       <div class="card" onmousedown="playClickSound()" onclick="location.href='langkawi.html'">
         <img src="langkawii.jpg" alt="Langkawi">
         <div class="card-content"><h3>Langkawi Trip</h3></div>
       </div>
-<div class="card" onmousedown="playClickSound()" onclick="location.href='random.html'">
+      <div class="card" onmousedown="playClickSound()" onclick="location.href='random.html'">
         <img src="rand0m.jpg" alt="Random">
         <div class="card-content"><h3>Random</h3></div>
       </div>
@@ -133,24 +145,23 @@
 
   <script>
     const audio = document.getElementById('bg-music');
+    const btn = document.getElementById('music-toggle');
 
-    // 1. Sambung muzik automatik jika status 'true'
+    // 1. Sambung muzik automatik
     window.addEventListener('load', () => {
-      const isPlaying = localStorage.getItem('musicPlaying') === 'true';
-      if (isPlaying) {
-        audio.play().catch(e => console.log("Menunggu interaksi pengguna"));
+      if (localStorage.getItem('musicPlaying') === 'true') {
+        audio.play().catch(() => {});
+        btn.disabled = true;
+        btn.innerText = "🔊 PLAYING...";
       }
     });
 
-    // 2. Fungsi Toggle (Simpan status dalam localStorage)
+    // 2. Fungsi Mula Muzik
     function toggleMusic() {
-      if (audio.paused) {
-        audio.play();
-        localStorage.setItem('musicPlaying', 'true');
-      } else {
-        audio.pause();
-        localStorage.setItem('musicPlaying', 'false');
-      }
+      audio.play();
+      localStorage.setItem('musicPlaying', 'true');
+      btn.disabled = true;
+      btn.innerText = "🔊 PLAYING...";
     }
 
     // 3. Fungsi Bunyi Klik
