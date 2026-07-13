@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <title>Langkawi Trip - Fahim Ruzaini</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    
+    :root { 
+      --dark-bg: #0a0e17;
+      --panel-bg: #16213e;
+      --accent-blue: #00ffcc; 
+      --text-white: #ffffff; 
+    }
+    
+    body { 
+      background-color: var(--dark-bg); 
+      background-image: 
+        linear-gradient(rgba(0, 255, 204, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 204, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      color: var(--text-white); 
+      font-family: 'Press Start 2P', cursive; 
+      margin: 0; 
+      padding: 40px; 
+      text-align: center;
+      font-size: 10px;
+    }
+/* Tajuk Bergerak (Glitch Effect) */
+    h1 { 
+      color: var(--accent-blue); 
+      text-transform: uppercase; 
+      margin-bottom: 40px; 
+      text-shadow: 2px 2px #000;
+      animation: glitch 3s infinite alternate;
+    }
+
+    @keyframes glitch {
+      0% { transform: translateX(0); }
+      50% { transform: translateX(10px); color: #ff00ff; }
+      100% { transform: translateX(0); }
+    }
+
+    h1 { color: var(--accent-blue); text-transform: uppercase; margin-bottom: 30px; text-shadow: 2px 2px #000; }
+    
+    .back-btn { 
+      display: inline-block; 
+      margin-bottom: 40px; 
+      color: var(--text-white); 
+      text-decoration: none; 
+      border: 4px solid var(--text-white); 
+      padding: 15px; 
+      cursor: pointer; 
+      transition: 0.2s;
+    }
+    .back-btn:hover { background: var(--accent-blue); color: #000; border-color: var(--accent-blue); }
+
+    .content-grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+      gap: 40px; 
+      max-width: 1000px; 
+      margin: auto; 
+    }
+
+    .media-item { 
+      border: 4px solid var(--text-white); 
+      padding: 5px; 
+      background: var(--panel-bg); 
+      transition: 0.2s; 
+    }
+    
+    .media-item:hover { 
+      transform: translate(-5px, -5px); 
+      border-color: var(--accent-blue);
+      box-shadow: 10px 10px 0px var(--accent-blue);
+    }
+
+    .media-item img { 
+      width: 100%; 
+      height: 300px; 
+      object-fit: cover; 
+      display: block; 
+      image-rendering: pixelated; 
+    }
+  </style>
+</head>
+<body>
+
+  <audio id="bg-music" loop><source src="wonderwall.mp3" type="audio/mpeg"></audio>
+
+  <a href="index.html" class="back-btn" onmousedown="playClickSound()">← BACK TO HOME</a>
+  <h1>Langkawi Trip</h1>
+
+  <div class="content-grid">
+    <div class="media-item"><img src="langkaw1.jpg" alt="Langkawi"></div>
+    <div class="media-item"><img src="langkawi2.jpg" alt="Langkawi"></div>
+    <div class="media-item"><img src="langkawi3.jpg" alt="Langkawi"></div>
+    <div class="media-item"><img src="langkawi4.jpg" alt="Langkawi"></div>
+    <div class="media-item"><img src="langkawi5.jpg" alt="Langkawi"></div>
+    <div class="media-item"><img src="langkawi6.jpg" alt="Langkawi"></div>
+  </div>
+
+  <script>
+    const audio = document.getElementById('bg-music');
+    
+    // Sambung muzik jika sedang dimainkan dari halaman sebelumnya
+    window.addEventListener('load', () => {
+      if (localStorage.getItem('musicPlaying') === 'true') {
+        audio.play().catch(() => {});
+      }
+    });
+
+    function playClickSound() {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(300, audioCtx.currentTime); 
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.2);
+    }
+  </script>
+</body>
+</html>

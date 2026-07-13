@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <title>Fahim Ruzaini’s Digital Diary</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    
+    :root {
+      --dark-bg: #0a0e17;
+      --panel-bg: #16213e;
+      --accent-blue: #00ffcc;
+      --text-white: #ffffff;
+    }
+
+    body {
+      background-color: var(--dark-bg);
+      background-image: 
+        linear-gradient(rgba(0, 255, 204, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 204, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      color: var(--text-white);
+      font-family: 'Press Start 2P', cursive;
+      margin: 0;
+      display: flex;
+      min-height: 100vh;
+      font-size: 10px;
+    }
+
+    .sidebar {
+      width: 80px;
+      background: rgba(10, 14, 23, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 50px;
+      border-right: 4px solid var(--accent-blue);
+    }
+
+    .nav-icon { margin-bottom: 40px; font-size: 20px; cursor: pointer; transition: 0.2s; }
+    .nav-icon:hover { color: var(--accent-blue); text-shadow: 0 0 10px var(--accent-blue); }
+
+    .main-content { flex: 1; padding: 40px; }
+    
+    header h1 { 
+      color: var(--accent-blue); 
+      text-transform: uppercase; 
+      margin: 0; 
+      font-size: 24px; 
+      text-shadow: 2px 2px #000;
+      animation: glitch 3s infinite alternate;
+    }
+
+    @keyframes glitch {
+      0% { transform: translateX(0); }
+      50% { transform: translateX(10px); color: #ff00ff; }
+      100% { transform: translateX(0); }
+    }
+
+    header p { opacity: 0.8; margin-top: 20px; }
+
+    #music-toggle {
+      background: var(--accent-blue);
+      border: 2px solid white;
+      color: #000;
+      font-family: 'Press Start 2P', cursive;
+      padding: 10px;
+      cursor: pointer;
+      margin-top: 15px;
+      font-size: 8px;
+    }
+    #music-toggle:hover { background: white; }
+
+    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; margin-top: 40px; }
+    
+    .card { 
+      background: var(--panel-bg); 
+      border: 4px solid var(--text-white); 
+      overflow: hidden; 
+      transition: 0.2s; 
+      cursor: pointer; 
+    }
+    
+    .card:hover { 
+      transform: translate(-5px, -5px); 
+      border-color: var(--accent-blue);
+      box-shadow: 10px 10px 0px var(--accent-blue);
+    }
+
+    .card img { width: 100%; height: 220px; object-fit: cover; image-rendering: pixelated; }
+    .card-content { padding: 20px; border-top: 4px solid var(--text-white); }
+    .card-content h3 { margin: 0; font-size: 12px; }
+  </style>
+</head>
+<body>
+
+  <!-- Audio untuk kesinambungan lagu -->
+  <audio id="bg-music" loop><source src="wonderwall.mp3" type="audio/mpeg"></audio>
+
+  <nav class="sidebar">
+    <div class="nav-icon" onclick="location.href='index.html'">👤</div>
+    <div class="nav-icon" onclick="location.href='index.html'">🏠</div>
+    <div class="nav-icon" onclick="location.href='index.html'">📸</div>
+    <div class="nav-icon" onclick="location.href='index.html'">⚙️</div>
+  </nav>
+
+  <main class="main-content">
+    <header>
+      <h1>Fahim Ruzaini’s Digital Diary</h1>
+      <p>My travel stories and random moments.</p>
+      <button id="music-toggle" onclick="toggleMusic()">🔊 My Music</button>
+    </header>
+
+    <div class="gallery">
+      <div class="card" onmousedown="playClickSound()" onclick="location.href='merbabu.html'">
+        <img src="babu.jpg" alt="Merbabu">
+        <div class="card-content"><h3>Merbabu Trip</h3></div>
+      </div>
+      <div class="card" onmousedown="playClickSound()" onclick="location.href='jakarta.html'">
+        <img src="ind0.jpg" alt="Jakarta">
+        <div class="card-content"><h3>Jakarta - Bandung</h3></div>
+      </div>
+      <div class="card" onmousedown="playClickSound()" onclick="location.href='langkawi.html'">
+        <img src="langkawii.jpg" alt="Langkawi">
+        <div class="card-content"><h3>Langkawi Trip</h3></div>
+      </div>
+<div class="card" onmousedown="playClickSound()" onclick="location.href='random.html'">
+        <img src="rand0m.jpg" alt="Random">
+        <div class="card-content"><h3>Random</h3></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const audio = document.getElementById('bg-music');
+
+    // 1. Sambung muzik automatik jika status 'true'
+    window.addEventListener('load', () => {
+      const isPlaying = localStorage.getItem('musicPlaying') === 'true';
+      if (isPlaying) {
+        audio.play().catch(e => console.log("Menunggu interaksi pengguna"));
+      }
+    });
+
+    // 2. Fungsi Toggle (Simpan status dalam localStorage)
+    function toggleMusic() {
+      if (audio.paused) {
+        audio.play();
+        localStorage.setItem('musicPlaying', 'true');
+      } else {
+        audio.pause();
+        localStorage.setItem('musicPlaying', 'false');
+      }
+    }
+
+    // 3. Fungsi Bunyi Klik
+    function playClickSound() {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(300, audioCtx.currentTime); 
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.2);
+    }
+  </script>
+</body>
+</html>
