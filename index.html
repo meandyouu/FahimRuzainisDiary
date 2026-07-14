@@ -11,7 +11,6 @@
       --panel-bg: #16213e;
       --accent-blue: #00ffcc;
       --text-white: #ffffff;
-      --stop-red: #ff4d4d;
     }
 
     body {
@@ -70,7 +69,6 @@
       cursor: pointer;
       margin-top: 15px;
       font-size: 8px;
-      transition: 0.3s;
     }
     #music-toggle:hover { background: white; }
 
@@ -111,25 +109,29 @@
     <header>
       <h1>Fahim Ruzaini’s Digital Diary</h1>
       <p>My travel stories and random moments.</p>
-      <button id="music-toggle" onclick="toggleMusic()">🔊 START MUSIC</button>
+      <button id="music-toggle" onclick="toggleMusic()">🔊 MUSIC ON/OFF</button>
     </header>
 
     <div class="gallery">
       <div class="card" onmousedown="playClickSound()" onclick="location.href='merbabu.html'">
-        <img src="babu.jpg" alt="Merbabu">
-        <div class="card-content"><h3>Merbabu Trip</h3></div>
+        <img src="babu.jpg" alt="Merbabu"><div class="card-content"><h3>Merbabu Trip</h3></div>
       </div>
       <div class="card" onmousedown="playClickSound()" onclick="location.href='jakarta.html'">
-        <img src="ind0.jpg" alt="Jakarta">
-        <div class="card-content"><h3>Jakarta - Bandung</h3></div>
+        <img src="ind0.jpg" alt="Jakarta"><div class="card-content"><h3>Jakarta - Bandung</h3></div>
       </div>
       <div class="card" onmousedown="playClickSound()" onclick="location.href='langkawi.html'">
-<img src="langkawii.jpg" alt="Langkawi">
-        <div class="card-content"><h3>Langkawi Trip</h3></div>
+        <img src="langkawii.jpg" alt="Langkawi"><div class="card-content"><h3>Langkawi Trip</h3></div>
+      </div>
+      <div class="card" onmousedown="playClickSound()" onclick="location.href='foodie.html'">
+        <img src="food1.jpg" alt="Foodie"><div class="card-content"><h3>Foodie Diary</h3></div>
+      </div>
+      <div class="card" onmousedown="playClickSound()" onclick="location.href='view.html'">
+        <img src="view.jpg" alt="View"><div class="card-content"><h3>Scenic Views</h3></div>
       </div>
       <div class="card" onmousedown="playClickSound()" onclick="location.href='random.html'">
-        <img src="rand0m.jpg" alt="Random">
-        <div class="card-content"><h3>Random</h3></div>
+        <img src="rand0m.jpg" alt="Random"><div class="card-content"><h3>Random</h3></div>
+
+
       </div>
     </div>
   </main>
@@ -138,49 +140,31 @@
     const audio = document.getElementById('bg-music');
     const btn = document.getElementById('music-toggle');
 
-    // 1. Restore status muzik semasa load halaman
+    // 1. Semak status muzik semasa load halaman
     window.addEventListener('load', () => {
-      const savedTime = sessionStorage.getItem('musicTime');
-      const isPlaying = sessionStorage.getItem('musicPlaying');
-
-      if (savedTime) audio.currentTime = parseFloat(savedTime);
-
-      if (isPlaying === 'true') {
+      const isPlaying = localStorage.getItem('musicPlaying') === 'true';
+      if (isPlaying) {
         audio.play().catch(() => {});
-        updateButtonState(true);
+        btn.innerText = "🔊 MUSIC: ON";
+      } else {
+        btn.innerText = "🔊 MUSIC: OFF";
       }
     });
 
-    // 2. Simpan masa muzik
-    audio.addEventListener('timeupdate', () => {
-      sessionStorage.setItem('musicTime', audio.currentTime);
-    });
-
-    // 3. Fungsi Toggle (Play/Stop)
+    // 2. Fungsi Toggle (On/Off)
     function toggleMusic() {
       if (audio.paused) {
         audio.play();
-        sessionStorage.setItem('musicPlaying', 'true');
-        updateButtonState(true);
+        localStorage.setItem('musicPlaying', 'true');
+        btn.innerText = "🔊 MUSIC: ON";
       } else {
         audio.pause();
-        sessionStorage.setItem('musicPlaying', 'false');
-        updateButtonState(false);
+        localStorage.setItem('musicPlaying', 'false');
+        btn.innerText = "🔊 MUSIC: OFF";
       }
     }
 
-    // Fungsi visual butang
-    function updateButtonState(isPlaying) {
-      if (isPlaying) {
-        btn.innerText = "🔇 STOP MUSIC";
-        btn.style.background = "var(--stop-red)";
-      } else {
-        btn.innerText = "🔊 START MUSIC";
-        btn.style.background = "var(--accent-blue)";
-      }
-    }
-
-    // 4. Fungsi Bunyi Klik
+    // 3. Fungsi Bunyi Klik
     function playClickSound() {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const osc = audioCtx.createOscillator();
