@@ -11,6 +11,7 @@
       --panel-bg: #16213e;
       --accent-blue: #00ffcc;
       --text-white: #ffffff;
+      --stop-red: #ff4d4d;
     }
 
     body {
@@ -69,9 +70,9 @@
       cursor: pointer;
       margin-top: 15px;
       font-size: 8px;
+      transition: 0.3s;
     }
-    #music-toggle:hover:not(:disabled) { background: white; }
-    #music-toggle:disabled { background: #555; color: #ccc; cursor: default; }
+    #music-toggle:hover { background: white; }
 
     .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; margin-top: 40px; }
     
@@ -96,7 +97,7 @@
 </head>
 <body>
 
-  <audio id="bg-music" loop><source src="Wonderwall.mp3" type="audio/mpeg"></audio>
+  <audio id="bg-music" loop><source src="wonderwall.mp3" type="audio/mpeg"></audio>
 
   <nav class="sidebar">
     <div class="nav-icon" onclick="location.href='index.html'">🏠</div>
@@ -122,8 +123,8 @@
         <img src="ind0.jpg" alt="Jakarta">
         <div class="card-content"><h3>Jakarta - Bandung</h3></div>
       </div>
-<div class="card" onmousedown="playClickSound()" onclick="location.href='langkawi.html'">
-        <img src="langkawii.jpg" alt="Langkawi">
+      <div class="card" onmousedown="playClickSound()" onclick="location.href='langkawi.html'">
+<img src="langkawii.jpg" alt="Langkawi">
         <div class="card-content"><h3>Langkawi Trip</h3></div>
       </div>
       <div class="card" onmousedown="playClickSound()" onclick="location.href='random.html'">
@@ -137,7 +138,7 @@
     const audio = document.getElementById('bg-music');
     const btn = document.getElementById('music-toggle');
 
-    // 1. Sambung muzik automatik jika sedang dimainkan
+    // 1. Restore status muzik semasa load halaman
     window.addEventListener('load', () => {
       const savedTime = sessionStorage.getItem('musicTime');
       const isPlaying = sessionStorage.getItem('musicPlaying');
@@ -146,22 +147,37 @@
 
       if (isPlaying === 'true') {
         audio.play().catch(() => {});
-        btn.disabled = true;
-        btn.innerText = "🔊 PLAYING...";
+        updateButtonState(true);
       }
     });
 
-    // 2. Simpan masa muzik setiap kali ia bergerak
+    // 2. Simpan masa muzik
     audio.addEventListener('timeupdate', () => {
       sessionStorage.setItem('musicTime', audio.currentTime);
     });
 
-    // 3. Fungsi Mula Muzik
+    // 3. Fungsi Toggle (Play/Stop)
     function toggleMusic() {
-      audio.play();
-      sessionStorage.setItem('musicPlaying', 'true');
-      btn.disabled = true;
-      btn.innerText = "🔊 PLAYING...";
+      if (audio.paused) {
+        audio.play();
+        sessionStorage.setItem('musicPlaying', 'true');
+        updateButtonState(true);
+      } else {
+        audio.pause();
+        sessionStorage.setItem('musicPlaying', 'false');
+        updateButtonState(false);
+      }
+    }
+
+    // Fungsi visual butang
+    function updateButtonState(isPlaying) {
+      if (isPlaying) {
+        btn.innerText = "🔇 STOP MUSIC";
+        btn.style.background = "var(--stop-red)";
+      } else {
+        btn.innerText = "🔊 START MUSIC";
+        btn.style.background = "var(--accent-blue)";
+      }
     }
 
     // 4. Fungsi Bunyi Klik
